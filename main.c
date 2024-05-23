@@ -1,16 +1,17 @@
 #include <stdio.h>
 #include "carts.h"
-#include "drow_functions.h"
+#include "draw_functions.h"
 
 int main(int argc, char **argv)
 {
-	/*init_head(0, 0);
+	init_head(10, 10);
+	enable_draw();
 	
+	draw_field();
+	drow_carts(head);
+	
+	disable_draw();
 	clean_carts();
-	
-	printf("%d", head);*/
-	
-	drow_field();
 	
 	return 0;
 }
