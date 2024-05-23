@@ -1,6 +1,6 @@
 #include "carts.h"
 
-void draw_field();
+void draw_clear_field();
 
 void enable_draw();
 

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "carts.h"
+#include "direction.h"
+#include "position.h"
 
 cart *head = NULL;
 
@@ -13,8 +15,38 @@ void init_head(int pos_x, int pos_y)
 		return;
 	}
 	head = calloc(1,sizeof(cart));
-	head -> pos_x = pos_x;
-	head -> pos_y = pos_y;
+	head -> pos.x = pos_x;
+	head -> pos.y = pos_y;
+}
+
+void move_carts(Direction dir)
+{
+	position target_pos = head -> pos;
+	switch(dir)
+	{
+		case direction_forward:
+			target_pos.y -= 1;
+			break;
+		case direction_back:
+			target_pos.y += 1;
+			break;
+		case direction_left:
+			target_pos.x -= 1;
+			break;
+		case direction_right:
+			target_pos.x += 1;
+			break;
+	}
+	
+	position tmp_pos;
+	cart *current_cart = head;
+	while(current_cart)
+	{
+		tmp_pos = current_cart -> pos;
+		current_cart -> pos = target_pos;
+		target_pos = tmp_pos;
+		current_cart = current_cart -> next;
+	}
 }
 
 //search tail cart
@@ -38,8 +70,7 @@ void add_cart()
 	cart *last_cart = get_last_cart(head);
 	cart *new_cart = calloc(1,sizeof(cart));
 	last_cart -> next = new_cart;
-	new_cart -> pos_x = last_cart -> pos_x;
-	new_cart -> pos_y = last_cart -> pos_y;
+	new_cart -> pos = last_cart -> pos;
 }
 
 void clean_carts()

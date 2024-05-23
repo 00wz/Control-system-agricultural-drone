@@ -23,15 +23,14 @@ void drow_carts(cart *head)
 {
 	while(head)
 	{
-		mvprintw( head -> pos_y, head -> pos_x, "*" );
+		mvprintw( head -> pos.y, head -> pos.x, "*" );
 		head = head -> next;
 	}
-	
-	getch();
 }
 
-void draw_field()
+void draw_clear_field()
 {
+	clear();
 	/*initscr(); //Инициализация curses
 
     //mvprintw прежде чем вывести строку, переведёт координаты курсора в заданную позицию
