@@ -1,25 +1,29 @@
-#include <stdio.h>
 #include <stdbool.h>
 #include "carts.h"
 #include "draw_functions.h"
 #include "curses/curses.h"
+#include <stdio.h>
 
 bool closeProgrammFlag = false;
 
 void start()
 {
 	init_head(10, 10);
-	//enable_draw();
+	enable_draw();
 	
 	//enable arrow control
 	keypad(stdscr, true);
+	//when starting the program there are already characters 
+	//in the input stream for some reason.
+	//getch is not working properly. so let's clear the stdin
+	fflush(stdin);
 }
 
 void process_input(int input_char)
 {
 	switch(input_char)
 	{
-		//enter to close program
+		//press enter to close program
 		case '\n':
 			closeProgrammFlag = true;
 			break;
@@ -38,14 +42,20 @@ void process_input(int input_char)
 	}
 }
 
+//conio.h and curses.h conflict. so let's move kbhit to another file.
+extern int usr_kbhit();
+
 void update()
 {
-	//draw_clear_field();
-	//drow_carts(head);
-	
 	//waiting for and processing keyboard input
-	int inp = getch();
-	process_input(inp);
+	//while(usr_kbhit())
+	//{
+		int inp = getch();
+		process_input(inp);
+	//}
+	
+	draw_clear_field();
+	drow_carts(head);
 }
 
 void end()
