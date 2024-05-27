@@ -85,3 +85,16 @@ void clean_carts()
 	head = NULL;
 }
 
+bool contain_cart(cart *head, struct position pos)
+{
+	while(head)
+	{
+		if(equalPositions(head -> pos, pos))
+		{
+			return true;
+		}
+		head = head -> next;
+	}
+	return false;
+}
+

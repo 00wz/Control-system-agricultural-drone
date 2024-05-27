@@ -2,7 +2,7 @@
 #include "carts.h"
 #include "draw_functions.h"
 #include "curses/curses.h"
-#include <stdio.h>
+#include "pumpkins.h"
 
 bool closeProgrammFlag = false;
 
@@ -10,21 +10,22 @@ void start()
 {
 	init_head(10, 10);
 	enable_draw();
-	
 	//enable arrow control
 	keypad(stdscr, true);
-	//when starting the program there are already characters 
-	//in the input stream for some reason.
-	//getch is not working properly. so let's clear the stdin
-	fflush(stdin);
+	halfdelay(1);
+	
+	//init pumpkins system
+	int row, col;
+	get_shape(&row, &col);
+	init_pumpkins(1, col - 2, 1, row - 2);
+	
 }
 
 void process_input(int input_char)
 {
 	switch(input_char)
 	{
-		//press enter to close program
-		case '\n':
+		case '\n'://press enter to close program
 			closeProgrammFlag = true;
 			break;
 		case KEY_LEFT:
@@ -42,20 +43,24 @@ void process_input(int input_char)
 	}
 }
 
+bool check_cart(struct position pos)
+{
+	return contain_cart(head, pos);
+}
+
 //conio.h and curses.h conflict. so let's move kbhit to another file.
 extern int usr_kbhit();
 
 void update()
 {
-	//waiting for and processing keyboard input
-	//while(usr_kbhit())
-	//{
-		int inp = getch();
-		process_input(inp);
-	//}
-	
 	draw_clear_field();
 	drow_carts(head);
+	draw_pumpkins(pumpkins, pumpkins_count);
+
+	int inp = getch();
+	process_input(inp);
+	
+	update_pumpkins(check_cart);
 }
 
 void end()

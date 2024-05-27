@@ -28,6 +28,14 @@ void drow_carts(cart *head)
 	}
 }
 
+void draw_pumpkins(struct position *pumpkins, int pumpkins_count)
+{
+	for(int i = 0; i < pumpkins_count; i++)
+	{
+		mvprintw( pumpkins[i].y, pumpkins[i].x, "@" );
+	}
+}
+
 void draw_clear_field()
 {
 	clear();

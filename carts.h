@@ -20,4 +20,6 @@ void clean_carts();
 
 void move_carts(Direction dir);
 
+bool contain_cart(cart *head, struct position pos);
+
 #endif
