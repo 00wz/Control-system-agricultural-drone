@@ -3,12 +3,15 @@
 #include "draw_functions.h"
 #include "curses/curses.h"
 #include "pumpkins.h"
+#include "direction.h"
 
 bool closeProgrammFlag = false;
 
+cart *main_dron;
+
 void start()
 {
-	init_head(10, 10);
+	main_dron = create_head(10, 10);
 	enable_draw();
 	//enable arrow control
 	keypad(stdscr, true);
@@ -21,6 +24,26 @@ void start()
 	
 }
 
+bool check_cart(struct position pos)
+{
+	return contain_cart(main_dron, pos);
+}
+
+void move_dron(cart *head, Direction dir)
+{
+	position next_pos = get_next_position(head -> pos, dir);
+	if(check_cart(next_pos))
+	{
+		return;
+	}
+	if(contain_pumpkin(next_pos))
+	{
+		remove_pumpkin(next_pos);
+		add_cart(head);
+	}
+	move_carts(head, dir);
+}
+
 void process_input(int input_char)
 {
 	switch(input_char)
@@ -29,32 +52,24 @@ void process_input(int input_char)
 			closeProgrammFlag = true;
 			break;
 		case KEY_LEFT:
-			move_carts(direction_left);
+			move_dron(main_dron, direction_left);
 			break;
 		case KEY_RIGHT:
-			move_carts(direction_right);
+			move_dron(main_dron, direction_right);
 			break;
 		case KEY_UP:
-			move_carts(direction_forward);
+			move_dron(main_dron, direction_forward);
 			break;
 		case KEY_DOWN:
-			move_carts(direction_back);
+			move_dron(main_dron, direction_back);
 			break;
 	}
 }
 
-bool check_cart(struct position pos)
-{
-	return contain_cart(head, pos);
-}
-
-//conio.h and curses.h conflict. so let's move kbhit to another file.
-extern int usr_kbhit();
-
 void update()
 {
 	draw_clear_field();
-	drow_carts(head);
+	drow_carts(main_dron);
 	draw_pumpkins(pumpkins, pumpkins_count);
 
 	int inp = getch();
@@ -66,7 +81,7 @@ void update()
 void end()
 {
 	disable_draw();
-	clean_carts();
+	clean_carts(main_dron);
 }
 
 int main(int argc, char **argv)

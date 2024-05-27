@@ -4,39 +4,20 @@
 #include "direction.h"
 #include "position.h"
 
-cart *head = NULL;
+//cart *head = NULL;
 
-//add first cart
-void init_head(int pos_x, int pos_y)
+//create first cart
+cart* create_head(int pos_x, int pos_y)
 {
-	if(head != NULL)
-	{
-		fprintf(stderr, "%s", "Head has already been initialized\n");
-		return;
-	}
-	head = calloc(1,sizeof(cart));
+	cart *head = calloc(1,sizeof(cart));
 	head -> pos.x = pos_x;
 	head -> pos.y = pos_y;
+	return head;
 }
 
-void move_carts(Direction dir)
+void move_carts(cart *head, Direction dir)
 {
-	position target_pos = head -> pos;
-	switch(dir)
-	{
-		case direction_forward:
-			target_pos.y -= 1;
-			break;
-		case direction_back:
-			target_pos.y += 1;
-			break;
-		case direction_left:
-			target_pos.x -= 1;
-			break;
-		case direction_right:
-			target_pos.x += 1;
-			break;
-	}
+	position target_pos = get_next_position(head -> pos, dir);
 	
 	position tmp_pos;
 	cart *current_cart = head;
@@ -60,20 +41,15 @@ static cart* get_last_cart(cart *current_cart)
 }
 
 //add new cart to tail
-void add_cart()
+void add_cart(cart *head)
 {
-	if(head == NULL)
-	{
-		fprintf(stderr, "%s", "Head is uninitialized\n");
-		return;
-	}
 	cart *last_cart = get_last_cart(head);
 	cart *new_cart = calloc(1,sizeof(cart));
 	last_cart -> next = new_cart;
 	new_cart -> pos = last_cart -> pos;
 }
 
-void clean_carts()
+void clean_carts(cart *head)
 {
 	cart *current = head;
 	while(current)

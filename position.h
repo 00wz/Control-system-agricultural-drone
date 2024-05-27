@@ -2,6 +2,7 @@
 #define POSITION_H
 
 #include <stdbool.h>
+#include "direction.h"
 
 typedef struct position
 {
@@ -10,5 +11,7 @@ typedef struct position
 }position;
 
 bool equalPositions(struct position a, struct position b);
+
+position get_next_position(position current, Direction dir);
 
 #endif

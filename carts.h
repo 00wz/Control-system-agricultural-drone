@@ -10,15 +10,13 @@ typedef struct cart
 	struct cart *next;
 }cart;
 
-extern cart *head;
+cart* create_head(int pos_x, int pos_y);
 
-void init_head(int pos_x, int pos_y);
+void add_cart(cart *head);
 
-void add_cart();
+void clean_carts(cart *head);
 
-void clean_carts();
-
-void move_carts(Direction dir);
+void move_carts(cart *head, Direction dir);
 
 bool contain_cart(cart *head, struct position pos);
 

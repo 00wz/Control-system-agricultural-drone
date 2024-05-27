@@ -35,16 +35,21 @@ void init_pumpkins(int min_x, int max_x, int min_y, int max_y)
 	//last_spawn_time = time(NULL);
 }
 
-bool contain_pumpkin(struct position pos)
+static int get_pumpkin_index(struct position pos)
 {
 	for(int i = 0; i < pumpkins_count; i++)
 	{
 		if(equalPositions(pumpkins[i], pos))
 		{
-			return true;
+			return i;
 		}
 	}
-	return false;
+	return -1;
+}
+
+bool contain_pumpkin(struct position pos)
+{
+ return get_pumpkin_index(pos) != -1;
 }
 
 static void add_pumpkins(struct position pos)
@@ -72,6 +77,20 @@ void add_rand_pumpkins(bool contain_cart(struct position pos))
 			add_pumpkins(new_pumpkins);
 			break;
 		}
+	}
+}
+
+void remove_pumpkin(position pos)
+{
+	int idx = get_pumpkin_index(pos);
+	if(idx == -1)
+	{
+		return;
+	}
+	pumpkins_count--;
+	for(; idx < pumpkins_count; idx++)
+	{
+		pumpkins[idx] = pumpkins[idx + 1];
 	}
 }
 

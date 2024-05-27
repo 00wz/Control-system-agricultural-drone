@@ -15,3 +15,5 @@ void add_rand_pumpkins(bool contain_cart(struct position pos));
 void init_pumpkins(int min_x, int max_x, int min_y, int max_y);
 
 void update_pumpkins(bool contain_cart(struct position pos));
+
+void remove_pumpkin(position pos);
