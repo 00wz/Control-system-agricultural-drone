@@ -37,7 +37,11 @@ void start()
 
 bool check_cart(struct position pos)
 {
-	return contain_cart(main_dron, pos);
+	if(contain_cart(main_dron, pos))
+	{
+		return true;
+	}
+	return contain_dron(pos);
 }
 
 bool try_get_free_pos(position *pos)

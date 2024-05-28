@@ -3,6 +3,7 @@
 #include "direction.h"
 #include <stdlib.h>
 #include "position.h"
+#include <time.h>
 #define DRONS_BUFFER 10
 //#define sign(x) ((x) == 0 ? 0 : ((x)<0 ? -1 : 1))
 #define get_horizontal_by_sign(x) ((x)<0 ? direction_left : direction_right)
@@ -11,8 +12,10 @@
 
 static cart* drons[DRONS_BUFFER];
 static position targets[DRONS_BUFFER];
-
+static clock_t last_move_time[DRONS_BUFFER] = {0};
 static int drons_count = 0;
+
+clock_t move_time_interval = 100;
 
 static void add_dron(struct position pos)
 {
@@ -58,6 +61,12 @@ void update_drons(void move_dron(cart *head, Direction dir))
 {
 	for(int i = 0; i < drons_count; i++)
 	{
+		if((clock() - last_move_time[i]) < move_time_interval)
+		{
+			continue;
+		}
+		last_move_time[i]  = clock();
+		
 		if(!contain_pumpkin(targets[i]))
 		{
 			if(!try_get_closest_pumpkin(drons[i] -> pos, &targets[i]))
@@ -84,5 +93,17 @@ void draw_drons(void drow_carts(cart *head))
 	{
 		drow_carts(drons[i]);
 	}
+}
+
+bool contain_dron(struct position pos)
+{
+	for(int i = 0; i < drons_count; i++)
+	{
+		if(contain_cart(drons[i], pos))
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
