@@ -8,10 +8,10 @@ struct position pumpkins[PUMPKINS_BUFFER];
 
 int pumpkins_count = 0;
 
-int x_min;
-int x_max;
-int y_min;
-int y_max;
+static int x_min;
+static int x_max;
+static int y_min;
+static int y_max;
 
 time_t last_spawn_time = 0;
 time_t spawn_interval = 1; 

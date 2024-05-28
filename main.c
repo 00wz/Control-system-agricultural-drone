@@ -9,6 +9,11 @@ bool closeProgrammFlag = false;
 
 cart *main_dron;
 
+int x_min;
+int x_max;
+int y_min;
+int y_max;
+
 void start()
 {
 	main_dron = create_head(10, 10);
@@ -20,7 +25,11 @@ void start()
 	//init pumpkins system
 	int row, col;
 	get_shape(&row, &col);
-	init_pumpkins(1, col - 2, 1, row - 2);
+	x_min = 1;
+	x_max = col -2;
+	y_min = 1;
+	y_max = row - 2;
+	init_pumpkins(x_min, x_max, y_min, y_max);
 	
 }
 
@@ -32,6 +41,14 @@ bool check_cart(struct position pos)
 void move_dron(cart *head, Direction dir)
 {
 	position next_pos = get_next_position(head -> pos, dir);
+	
+	if(next_pos.x < x_min ||
+		next_pos.x > x_max ||
+		next_pos.y < y_min ||
+		next_pos.y > y_max)
+	{
+		return;
+	}
 	if(check_cart(next_pos))
 	{
 		return;
