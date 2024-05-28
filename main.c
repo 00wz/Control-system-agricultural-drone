@@ -4,6 +4,9 @@
 #include "curses/curses.h"
 #include "pumpkins.h"
 #include "direction.h"
+#include <stdlib.h>
+#include "artificial_intelligence.h"
+#define SPAWN_ATTEMPTS 5
 
 bool closeProgrammFlag = false;
 
@@ -22,20 +25,37 @@ void start()
 	keypad(stdscr, true);
 	halfdelay(1);
 	
-	//init pumpkins system
+	//init fields shape
 	int row, col;
 	get_shape(&row, &col);
 	x_min = 1;
 	x_max = col -2;
 	y_min = 1;
 	y_max = row - 2;
-	init_pumpkins(x_min, x_max, y_min, y_max);
 	
 }
 
 bool check_cart(struct position pos)
 {
 	return contain_cart(main_dron, pos);
+}
+
+bool try_get_free_pos(position *pos)
+{
+	//limit the number of search attempts to prevent freezes
+	for(int i = 0; i < SPAWN_ATTEMPTS; i++)
+	{
+		struct position result;
+		result.y = rand() % (y_max - y_min + 1) + y_min;
+		result.x = rand() % (x_max - x_min + 1) + x_min;
+		
+		if(!check_cart(result) && !contain_pumpkin(result))
+		{
+			*pos = result;
+			return true;
+		}
+	}
+	return false;
 }
 
 void move_dron(cart *head, Direction dir)
@@ -80,6 +100,9 @@ void process_input(int input_char)
 		case KEY_DOWN:
 			move_dron(main_dron, direction_back);
 			break;
+		case ' '://add dron
+			add_random_dron(try_get_free_pos);
+			break;
 	}
 }
 
@@ -87,18 +110,21 @@ void update()
 {
 	draw_clear_field();
 	drow_carts(main_dron);
+	draw_drons(drow_carts);
 	draw_pumpkins(pumpkins, pumpkins_count);
 
 	int inp = getch();
 	process_input(inp);
 	
-	update_pumpkins(check_cart);
+	update_drons(move_dron);
+	update_pumpkins(try_get_free_pos);
 }
 
 void end()
 {
 	disable_draw();
 	clean_carts(main_dron);
+	clean_drons();
 }
 
 int main(int argc, char **argv)

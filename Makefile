@@ -2,8 +2,8 @@ CURSES_PATH = curses/pdcurses.a
 
 all: clean main
 
-main: main.o carts.o draw_functions.o pumpkins.o position.o
-	gcc -o main main.o carts.o draw_functions.o $(CURSES_PATH) pumpkins.o position.o
+main: main.o carts.o draw_functions.o pumpkins.o position.o artificial_intelligence.o
+	gcc -o main main.o carts.o draw_functions.o $(CURSES_PATH) pumpkins.o position.o artificial_intelligence.o
 
 main.o: main.c
 	gcc -c -o main.o main.c
@@ -19,6 +19,9 @@ pumpkins.o: pumpkins.c
 
 position.o: position.c
 	gcc -c -o position.o position.c
+
+artificial_intelligence.o: artificial_intelligence.c
+	gcc -c -o artificial_intelligence.o artificial_intelligence.c
 
 clean:
 	del /q *.o main.exe

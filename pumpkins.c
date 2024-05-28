@@ -1,38 +1,24 @@
 #include "position.h"
 #include <stdbool.h>
-#include <stdlib.h>
 #include "pumpkins.h"
 #include <time.h>
+#include <math.h>
 
 struct position pumpkins[PUMPKINS_BUFFER];
 
 int pumpkins_count = 0;
 
-static int x_min;
-static int x_max;
-static int y_min;
-static int y_max;
-
 time_t last_spawn_time = 0;
 time_t spawn_interval = 1; 
 
 
-void update_pumpkins(bool contain_cart(struct position pos))
+void update_pumpkins(bool try_get_free_pos(position *pos))
 {
 	if((time(NULL) - last_spawn_time) >= spawn_interval)
 	{
 		last_spawn_time = time(NULL);
-		add_rand_pumpkins(contain_cart);
+		add_rand_pumpkins(try_get_free_pos);
 	}
-}
-
-void init_pumpkins(int min_x, int max_x, int min_y, int max_y)
-{
-	x_min = min_x;
-	x_max = max_x;
-	y_min = min_y;
-	y_max = max_y;
-	//last_spawn_time = time(NULL);
 }
 
 static int get_pumpkin_index(struct position pos)
@@ -54,30 +40,23 @@ bool contain_pumpkin(struct position pos)
 
 static void add_pumpkins(struct position pos)
 {
-	pumpkins[pumpkins_count] = pos;
-	pumpkins_count++;
-}
-
-void add_rand_pumpkins(bool contain_cart(struct position pos))
-{
 	if(pumpkins_count >= PUMPKINS_BUFFER)
 	{
 		return;
 	}
-	
-	//limits the number of pumpkin respawn attempts to prevent freezes
-	for(int i = 0; i < SPAWN_ATTEMPTS; i++)
+	pumpkins[pumpkins_count] = pos;
+	pumpkins_count++;
+}
+
+void add_rand_pumpkins(bool try_get_free_pos(position *pos))
+{
+	position pumpkin_position;
+	if(!try_get_free_pos(&pumpkin_position))
 	{
-		struct position new_pumpkins;
-		new_pumpkins.y = rand() % (y_max - y_min + 1) + y_min;
-		new_pumpkins.x = rand() % (x_max - x_min + 1) + x_min;
-		
-		if(!contain_cart(new_pumpkins) && !contain_pumpkin(new_pumpkins))
-		{
-			add_pumpkins(new_pumpkins);
-			break;
-		}
+		return;
 	}
+	
+	add_pumpkins(pumpkin_position);
 }
 
 void remove_pumpkin(position pos)
@@ -92,5 +71,34 @@ void remove_pumpkin(position pos)
 	{
 		pumpkins[idx] = pumpkins[idx + 1];
 	}
+}
+
+bool try_get_closest_pumpkin(position pos, position *result)
+{
+	position closest;
+	int closest_dist;
+	if(pumpkins_count > 0)
+	{
+		closest = pumpkins[0];
+		closest_dist = abs(pumpkins[0].x - pos.x) + 
+						abs(pumpkins[0].y - pos.y);
+	}
+	else
+	{
+		return false;
+	}
+	
+	for(int i = 1; i < pumpkins_count; i++)
+	{
+		int dist = abs(pumpkins[i].x - pos.x) + 
+					abs(pumpkins[i].y - pos.y);
+		if(dist < closest_dist)
+		{
+			closest = pumpkins[i];
+			closest_dist = dist;
+		}
+	}
+	*result = closest;
+	return true;
 }
 
