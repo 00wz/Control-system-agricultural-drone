@@ -39,32 +39,6 @@ void draw_pumpkins(struct position *pumpkins, int pumpkins_count)
 void draw_clear_field()
 {
 	clear();
-	/*initscr(); //Инициализация curses
-
-    //mvprintw прежде чем вывести строку, переведёт координаты курсора в заданную позицию
-    mvprintw( 5, 5, "Hello, World!" );
-    getch();  //Ожидаем нажатия клавиши
-
-    endwin(); //Выход из curses*/
-
- /*
-	// инициализация (должна быть выполнена 
-	// перед использованием ncurses)
-	initscr();
-	
-	// Измеряем размер экрана в рядах и колонках
-	int row, col;
-	getmaxyx(stdscr, row, col);
-  
-	// перемещение курсора в стандартном экране
-	move(row / 2, col / 2);
-
-	printw("Hello world"); // вывод строки
-	//refresh(); // обновить экран
-	getch(); // ждём нажатия символа
-  
-	endwin(); // завершение работы с ncurses
-*/
 	
 	for(int i = 0; i < screen_col; i++)
 	{

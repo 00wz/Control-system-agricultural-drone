@@ -19,8 +19,11 @@ int y_max;
 
 void start()
 {
+	//create users dron
 	main_dron = create_head(10, 10);
+	
 	enable_draw();
+	
 	//enable arrow control
 	keypad(stdscr, true);
 	halfdelay(1);
@@ -35,6 +38,7 @@ void start()
 	
 }
 
+//checks if there are drones at a given position
 bool check_cart(struct position pos)
 {
 	if(contain_cart(main_dron, pos))
@@ -44,6 +48,7 @@ bool check_cart(struct position pos)
 	return contain_dron(pos);
 }
 
+//tries to find a free cell in several tries
 bool try_get_free_pos(position *pos)
 {
 	//limit the number of search attempts to prevent freezes
@@ -62,6 +67,7 @@ bool try_get_free_pos(position *pos)
 	return false;
 }
 
+//moves the drone if there are no obstacles
 void move_dron(cart *head, Direction dir)
 {
 	position next_pos = get_next_position(head -> pos, dir);
@@ -112,14 +118,17 @@ void process_input(int input_char)
 
 void update()
 {
+	//draw
 	draw_clear_field();
 	drow_carts(main_dron);
 	draw_drons(drow_carts);
 	draw_pumpkins(pumpkins, pumpkins_count);
 
+	//handle input
 	int inp = getch();
 	process_input(inp);
 	
+	//pumpkin and drone systems
 	update_drons(move_dron);
 	update_pumpkins(try_get_free_pos);
 }

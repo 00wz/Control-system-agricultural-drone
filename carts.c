@@ -4,8 +4,6 @@
 #include "direction.h"
 #include "position.h"
 
-//cart *head = NULL;
-
 //create first cart
 cart* create_head(int pos_x, int pos_y)
 {
